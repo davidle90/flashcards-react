@@ -1,6 +1,6 @@
-function SiteFooter() {
+const SiteFooter = () => {
   return (
-    <div>SiteFooter</div>
+    <div className="py-4 text-center bg-gray-700 text-white">Developed by David Le</div>
   )
 }
 

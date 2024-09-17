@@ -9,7 +9,7 @@ function MasterLayout() {
         <div className="h-screen flex flex-col justify-between">
             <SiteHeader />
                 <main className="grow">
-                    <div className="container mx-auto pu-6">
+                    <div className="container mx-auto py-6">
                         <Outlet />
                     </div>
                 </main>

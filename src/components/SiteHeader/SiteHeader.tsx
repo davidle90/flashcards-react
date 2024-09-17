@@ -1,6 +1,14 @@
-function SiteHeader() {
+import { Link } from "react-router-dom"
+
+const SiteHeader = () => {
   return (
-    <div>SiteHeader</div>
+    <div className="py-4 text-center bg-gray-700 text-white">
+      <ul>
+        <li>
+          <Link to="/flashcards-react">Home</Link>
+        </li>
+      </ul>
+    </div>
   )
 }
 
