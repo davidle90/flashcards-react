@@ -1,0 +1,54 @@
+[
+    {
+        "category": "Science",
+        "description": "Science related flashcards",
+        "flashcards": [
+            {
+                "question": "Who discovered gravity?",
+                "answer": "Isaac Newton"
+            },
+            {
+                "question": "What is the biggest planet in our solar system?",
+                "answer": "Jupiter"
+            },
+            {
+                "question": "What is the boiling point of water?",
+                "answer": "100 °C"
+            },
+            {
+                "question": "When does water freeze?",
+                "answer": "Water freezes at 0 °C"
+            },
+            {
+                "question": "What is the number pi?",
+                "answer": "3.14"
+            }
+        ]
+    },
+    {
+        "category": "Web development",
+        "description": "Web development related flashcards",
+        "flashcards": [
+            {
+                "question": "What does CSS stand for?",
+                "answer": "Cascade Style Sheet"
+            },
+            {
+                "question": "What does HTML stand for?",
+                "answer": "Hyper Text Markup Language"
+            },
+            {
+                "question": "What is a string?",
+                "answer": "A sequence of characters"
+            },
+            {
+                "question": "What is boolean",
+                "answer": "True or false value"
+            },
+            {
+                "question": "What does MVC stand for",
+                "answer": "Model, View and Controller"
+            }
+        ]
+    }
+]

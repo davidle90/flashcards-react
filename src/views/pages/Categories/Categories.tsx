@@ -1,4 +1,4 @@
-function Categories() {
+const Categories = () => {
   return (
     <div>Categories</div>
   )

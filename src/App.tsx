@@ -4,9 +4,11 @@ import Home from './views/pages/Home/Home'
 
 function App() {
 
+  const basepath = "/flashcards-react/";
+
   return (
     <Routes>
-      <Route path="/" element={<MasterLayout />}>
+      <Route path={basepath} element={<MasterLayout />}>
         <Route index element={<Home />} />
       </Route>
     </Routes>
