@@ -1,28 +1,44 @@
 import { useLocation } from "react-router-dom";
-import data from "../../../data/flashcards.json";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FlashcardSet, Flashcard } from "../../../types";
+
+// const generateRandomIndex = (count: number) => Math.floor(Math.random() * count);
+
+const generateRandomId = (cards: Flashcard[]) => {
+    const randomIndex = Math.floor(Math.random() * cards.length);    
+    return cards[randomIndex].id;
+  };
 
 const Cardset = () => {
+    const [cardset, setCardset] = useState<FlashcardSet | null>(null);
+    const [cardCount, setCardCount] = useState(0);
+    const [currentId, setCurrentId] = useState<number | null>(null);
+    const [showAnswer, setShowAnswer] = useState<boolean>(false);
+    const [learnedCards, setLearnedCards] = useState<number[]>([]);
 
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const category = searchParams.get('category');
-    const cardset = data.find(d => d.category === category);
 
-    if(!cardset){
-        return <div>No flashcards found.</div>;
-    }
+    useEffect(() => {
+        const flashcardSets = localStorage.getItem("flashcardSets");
+        const data: FlashcardSet[] = flashcardSets ? JSON.parse(flashcardSets) : [];
+        const selectedCardset = data.find(d => d.category === category);
 
-    const generateRandomIndex = (count: number) => Math.floor(Math.random() * count);
+        if(selectedCardset) {
+            setCardset(selectedCardset);
+            setCardCount(selectedCardset.flashcards.length);
 
-    const flashcardCount = cardset.flashcards.length;
-    const [cardCount, setCardCount] = useState(flashcardCount);
-    const [currentIndex, setCurrentIndex] = useState(generateRandomIndex(flashcardCount));
-    const [showAnswer, setShowAnswer] = useState(false);
-    const [flashcardsComplete, setFlashcardsComplete] = useState(false);
-
+            const randomId = generateRandomId(selectedCardset.flashcards);
+            setCurrentId(randomId);
+        } else {
+            setCardCount(0);
+        }
+    }, [category]);
 
     const handleNext = (input: string) => {
+        if (!cardset || currentId === null) return;
+
         setShowAnswer(false);
 
         if (input === "skip") {
@@ -31,25 +47,33 @@ const Cardset = () => {
                 return;
             }
 
-            let newIndex;
+            const availableCards = cardset.flashcards.filter((card) => !learnedCards.includes(card.id));
+
+            let newId;
 
             do {
-                newIndex = generateRandomIndex(cardCount);
-            } while (newIndex === currentIndex);
+                newId = generateRandomId(availableCards);
+            } while (newId === currentId)
 
-            setCurrentIndex(newIndex);
+            setCurrentId(newId);
 
-        } else if (input === "correct") {
+        } else if (input === "learned") {
             setCardCount((prevCardCount) => {
                 const newCardCount = prevCardCount - 1;
-                if (newCardCount <= 0) {
-                    setFlashcardsComplete(true);
-                } else {
-                    setCurrentIndex(generateRandomIndex(newCardCount));
-                }
                 return newCardCount;
             });
-        }
+
+            setLearnedCards((prevLearnedCards) => {
+                const newLearnedCards = [...prevLearnedCards, currentId];
+                const availableCards = cardset.flashcards.filter(card => !newLearnedCards.includes(card.id));
+                if(availableCards.length <= 0){
+                    return newLearnedCards;
+                }
+                const newId = generateRandomId(availableCards);
+                setCurrentId(newId);
+                return newLearnedCards;
+            });
+        }        
     };
 
     const handleShowAnswer = () => {
@@ -57,50 +81,57 @@ const Cardset = () => {
     }
 
     const handleResetFlashcards = () => {
-        setCardCount(flashcardCount);
-        setCurrentIndex(generateRandomIndex(flashcardCount));
+        if(!cardset) return;
+
+        setLearnedCards([]);
         setShowAnswer(false);
-        setFlashcardsComplete(false);
+        setCardCount(cardset.flashcards.length);
+        const randomId = generateRandomId(cardset.flashcards);
+        setCurrentId(randomId);
     }
+
+    if(!cardset){
+        return <div>No flashcards found.</div>;
+    }
+
+    const currentFlashcard = cardset.flashcards.find(card => card.id === currentId);
 
     return (
         <>
-            <div>{cardset.category}</div>
-            <p>{cardset.description}</p>
+            <div className="text-3xl font-semibold">{cardset.category}</div>
+            <p className="mb-5">{cardset.description}</p>
+            <div>{cardCount}/{cardset.flashcards.length} cards remaining</div>
 
-            <div>{cardCount}/{cardset.flashcards.length}</div>
-            <div>{currentIndex}</div>
-
-            { flashcardsComplete ? (
+            { cardCount <= 0 ? (
                 <div>Congratulations! You have completed this card set!</div>
             ) : (
                 <div>
                     <div className="border">
-                        <h1>Question:</h1>
-                        <p>{cardset.flashcards[currentIndex].question}</p>
+                        <h1>#{currentFlashcard?.id} Question:</h1>
+                        <p>{currentFlashcard?.question}</p>
 
                         {showAnswer ? (
                             <>
                                 <h1>Answer:</h1>
-                                <p>{cardset.flashcards[currentIndex].answer}</p>
+                                <p>{currentFlashcard?.answer}</p>
                             </>
                         ) : (
-                            <button onClick={handleShowAnswer}>Show answer</button>
+                            <button className="border border-yellow-500 text-yellow-500 py-1 px-2" onClick={handleShowAnswer}>Show answer</button>
                         )}
                     </div>
 
                     <div className="flex justify-between items-center">
                         {cardCount > 1 ? (
-                            <button onClick={() => handleNext("skip")}>Skip</button>
+                            <button className="border border-orange-500 text-orange-500 py-1 px-2" onClick={() => handleNext("skip")}>Skip</button>
                         ) : (
-                            <button disabled>Skip</button>
+                            <button className="border border-gray-500 text-gray-500 py-1 px-2" disabled>Skip</button>
                         )}
-                        <button onClick={() => handleNext("correct")}>Got it!</button>
+                        <button className="border border-green-500 text-green-500 py-1 px-2" onClick={() => handleNext("learned")}>Got it!</button>
                     </div>
                 </div>
             )}            
 
-            <button onClick={handleResetFlashcards}>Reset flashcards</button>
+            <button className="border border-purple-500 text-purple-500 py-1 px-2" onClick={handleResetFlashcards}>Reset flashcards</button>
         </>
     )
 }
