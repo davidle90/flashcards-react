@@ -16,18 +16,23 @@ const Home = () => {
     <>
       <div className="flex justify-center items-center gap-4">
         {data.map((data, index: number) => (
-          <div className="flex">
-            <Link to={`cardset?category=${encodeURIComponent(data.category)}`} key={index} className="cursor-pointer">
+          <div className="flex" key={index}>
+            <Link to={`cardset?category=${encodeURIComponent(data.category)}`} className="cursor-pointer">
               <Card category={data.category} description={data.description} />
             </Link>
             <div>
-              <Link to={`edit?category=${encodeURIComponent(data.category)}`} key={index} className="cursor-pointer">
+              <Link to={`edit?category=${encodeURIComponent(data.category)}`} className="cursor-pointer">
                 <div className="border border-gray-500 text-gray-500 py-1 px-2"><Pencil /></div>
               </Link>
               <button className="border border-red-500 text-red-500 py-1 px-2"><Trash /></button>
             </div>
           </div>
         ))}
+        <Link to={`edit`} className="cursor-pointer">
+          <div className="border p-4">
+              <h1 className="text-3xl">Add</h1>
+          </div>
+        </Link>
       </div>
       <button className="border border-red-500 text-red-500 py-1 px-2" onClick={resetFlashcardSets}>RESET</button>
     </>
