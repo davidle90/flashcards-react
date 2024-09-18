@@ -10,48 +10,58 @@ const Cardset = () => {
     const cardset = data.find(d => d.category === category);
 
     if(!cardset){
-        return (
-            <div>
-                No flashcards found.
-            </div>
-        )
+        return <div>No flashcards found.</div>;
     }
 
-    const flashcardCount = cardset.flashcards.length;
+    const generateRandomIndex = (count) => Math.floor(Math.random() * count);
 
+    const flashcardCount = cardset.flashcards.length;
     const [cardCount, setCardCount] = useState(flashcardCount);
-    const randomIndex = Math.floor(Math.random() * cardCount);
-    const [currentIndex, setCurrentIndex] = useState(randomIndex);
+    const [currentIndex, setCurrentIndex] = useState(generateRandomIndex(flashcardCount));
+    const [showAnswer, setShowAnswer] = useState(false);
+    const [flashcardsComplete, setFlashcardsComplete] = useState(false);
+
 
     const handleNext = (input) => {
+        setShowAnswer(false);
 
-        if(input === "skip") {
+        if (input === "skip") {
+            if(cardCount <= 1) {
+                console.log("Not enough cards to shuffle");
+                return;
+            }
+
             let newIndex;
 
-            if(cardCount < 0) {
-                console.log("Not enough cards to shuffle");
-            } else {
-                do {
-                    newIndex = Math.floor(Math.random() * cardCount);
-                } while (newIndex === currentIndex);
+            do {
+                newIndex = generateRandomIndex(cardCount);
+            } while (newIndex === currentIndex);
 
-                setCurrentIndex(newIndex);
-            }
+            setCurrentIndex(newIndex);
 
-        }else if(input === "correct") {
-            setCardCount(cardCount - 1);
-            const randomIndex = Math.floor(Math.random() * cardCount);
-
-            if(cardCount < 0){
-                console.log("You got it all :)");
-            } else {
-                setCurrentIndex(randomIndex);
-            }
-
-            // Restart button, Complete Screen
-
+        } else if (input === "correct") {
+            setCardCount((prevCardCount) => {
+                const newCardCount = prevCardCount - 1;
+                if (newCardCount <= 0) {
+                    setFlashcardsComplete(true);
+                } else {
+                    setCurrentIndex(generateRandomIndex(newCardCount));
+                }
+                return newCardCount;
+            });
         }
     };
+
+    const handleShowAnswer = () => {
+        setShowAnswer(true);
+    }
+
+    const handleResetFlashcards = () => {
+        setCardCount(flashcardCount);
+        setCurrentIndex(generateRandomIndex(flashcardCount));
+        setShowAnswer(false);
+        setFlashcardsComplete(false);
+    }
 
     return (
         <>
@@ -61,18 +71,36 @@ const Cardset = () => {
             <div>{cardCount}/{cardset.flashcards.length}</div>
             <div>{currentIndex}</div>
 
-            <div className="border">
-                <h1>Question:</h1>
-                <p>{cardset.flashcards[currentIndex].question}</p>
+            { flashcardsComplete ? (
+                <div>Congratulations! You have completed this card set!</div>
+            ) : (
+                <div>
+                    <div className="border">
+                        <h1>Question:</h1>
+                        <p>{cardset.flashcards[currentIndex].question}</p>
 
-                <h1>Answer:</h1>
-                <p>{cardset.flashcards[currentIndex].answer}</p>
-            </div>
+                        {showAnswer ? (
+                            <>
+                                <h1>Answer:</h1>
+                                <p>{cardset.flashcards[currentIndex].answer}</p>
+                            </>
+                        ) : (
+                            <button onClick={handleShowAnswer}>Show answer</button>
+                        )}
+                    </div>
 
-            <div className="flex justify-between items-center">
-                <button onClick={() => handleNext("skip")}>Skip</button>
-                <button onClick={() => handleNext("correct")}>Got it!</button>
-            </div>
+                    <div className="flex justify-between items-center">
+                        {cardCount > 1 ? (
+                            <button onClick={() => handleNext("skip")}>Skip</button>
+                        ) : (
+                            <button disabled>Skip</button>
+                        )}
+                        <button onClick={() => handleNext("correct")}>Got it!</button>
+                    </div>
+                </div>
+            )}            
+
+            <button onClick={handleResetFlashcards}>Reset flashcards</button>
         </>
     )
 }
