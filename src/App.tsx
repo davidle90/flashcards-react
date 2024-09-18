@@ -11,7 +11,7 @@ function App() {
     <Routes>
       <Route path={basepath} element={<MasterLayout />}>
         <Route index element={<Home />} />
-        <Route path={basepath + "cardset"} element={<Cardset cardset={{}} />}/>
+        <Route path={basepath + "cardset"} element={<Cardset />}/>
       </Route>
     </Routes>
   )

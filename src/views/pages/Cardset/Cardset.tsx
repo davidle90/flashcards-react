@@ -13,7 +13,7 @@ const Cardset = () => {
         return <div>No flashcards found.</div>;
     }
 
-    const generateRandomIndex = (count) => Math.floor(Math.random() * count);
+    const generateRandomIndex = (count: number) => Math.floor(Math.random() * count);
 
     const flashcardCount = cardset.flashcards.length;
     const [cardCount, setCardCount] = useState(flashcardCount);
@@ -22,7 +22,7 @@ const Cardset = () => {
     const [flashcardsComplete, setFlashcardsComplete] = useState(false);
 
 
-    const handleNext = (input) => {
+    const handleNext = (input: string) => {
         setShowAnswer(false);
 
         if (input === "skip") {

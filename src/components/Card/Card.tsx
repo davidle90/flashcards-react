@@ -1,4 +1,9 @@
-const Card = ({ category, description }) => {
+interface CardProps {
+  category: string;
+  description: string;
+}
+
+const Card: React.FC<CardProps> = ({ category, description }) => {
   return (
     <>
         <div className="border p-4">
