@@ -1,5 +1,6 @@
 [
     {
+        "id": 1,
         "category": "Science",
         "description": "Science related flashcards",
         "flashcards": [
@@ -31,6 +32,7 @@
         ]
     },
     {
+        "id": 2,
         "category": "Web development",
         "description": "Web development related flashcards",
         "flashcards": [
