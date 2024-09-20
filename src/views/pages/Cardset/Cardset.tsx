@@ -2,8 +2,6 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FlashcardSet, Flashcard } from "../../../types";
 
-// const generateRandomIndex = (count: number) => Math.floor(Math.random() * count);
-
 const generateRandomId = (cards: Flashcard[]) => {
     const randomIndex = Math.floor(Math.random() * cards.length);    
     return cards[randomIndex].id;
@@ -12,7 +10,7 @@ const generateRandomId = (cards: Flashcard[]) => {
 const Cardset = () => {
     const [cardset, setCardset] = useState<FlashcardSet | null>(null);
     const [cardCount, setCardCount] = useState(0);
-    const [currentId, setCurrentId] = useState<number | null>(null);
+    const [currentId, setCurrentId] = useState<number>(0);
     const [showAnswer, setShowAnswer] = useState<boolean>(false);
     const [learnedCards, setLearnedCards] = useState<number[]>([]);
 
@@ -28,9 +26,14 @@ const Cardset = () => {
         if(selectedCardset) {
             setCardset(selectedCardset);
             setCardCount(selectedCardset.flashcards.length);
-
-            const randomId = generateRandomId(selectedCardset.flashcards);
-            setCurrentId(randomId);
+            if(selectedCardset.flashcards.length <= 0){
+                setCardset(null);
+            } else {
+                const randomId = generateRandomId(selectedCardset.flashcards);
+                if(randomId){
+                    setCurrentId(randomId);
+                }
+            }
         } else {
             setCardCount(0);
         }
@@ -47,7 +50,8 @@ const Cardset = () => {
                 return;
             }
 
-            const availableCards = cardset.flashcards.filter((card) => !learnedCards.includes(card.id));
+            const availableCards = cardset.flashcards.filter((card) => card.id ? !learnedCards.includes(card.id) : console.log("card id missing")
+            );
 
             let newId;
 
@@ -55,7 +59,9 @@ const Cardset = () => {
                 newId = generateRandomId(availableCards);
             } while (newId === currentId)
 
-            setCurrentId(newId);
+            if(newId){
+                setCurrentId(newId);
+            }
 
         } else if (input === "learned") {
             setCardCount((prevCardCount) => {
@@ -65,12 +71,18 @@ const Cardset = () => {
 
             setLearnedCards((prevLearnedCards) => {
                 const newLearnedCards = [...prevLearnedCards, currentId];
-                const availableCards = cardset.flashcards.filter(card => !newLearnedCards.includes(card.id));
+                const availableCards = cardset.flashcards.filter(card => card.id ? !newLearnedCards.includes(card.id) : console.log("card id missing")
+                );
                 if(availableCards.length <= 0){
                     return newLearnedCards;
                 }
+
                 const newId = generateRandomId(availableCards);
-                setCurrentId(newId);
+
+                if(newId){
+                    setCurrentId(newId);
+                }
+
                 return newLearnedCards;
             });
         }        
@@ -87,7 +99,9 @@ const Cardset = () => {
         setShowAnswer(false);
         setCardCount(cardset.flashcards.length);
         const randomId = generateRandomId(cardset.flashcards);
-        setCurrentId(randomId);
+        if(randomId){
+            setCurrentId(randomId);
+        }
     }
 
     if(!cardset){
