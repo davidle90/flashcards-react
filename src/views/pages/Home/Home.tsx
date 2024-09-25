@@ -4,6 +4,7 @@ import { FlashcardSet } from '../../../types';
 import { Pencil, Trash } from "@phosphor-icons/react";
 import { useEffect, useState } from 'react';
 import data from '../../../data/flashcards.json';
+import Button from '../../../components/Button/Button';
 
 const Home = () => {
   const [flashcardSets, setFlashcardSets] = useState<FlashcardSet[]>([]);
@@ -33,31 +34,56 @@ const Home = () => {
 
   return (
     <>
-      <div className="flex justify-center items-center gap-4">
-        {flashcardSets.map((data, index: number) => (
-          <div className="flex" key={index}>
-            <Link to={`cardset?category=${encodeURIComponent(data.category)}`} className="cursor-pointer">
-              <Card category={data.category} description={data.description} />
-            </Link>
-            <div>
-              <Link to={`edit?category=${encodeURIComponent(data.category)}`} className="cursor-pointer">
-                <div className="border border-gray-500 text-gray-500 py-1 px-2"><Pencil /></div>
+      <div className="flex justify-center items-center gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+          {flashcardSets.map((data, index: number) => (
+            <div key={index} className="flex flex-col bg-white shadow-lg rounded-lg overflow-hidden border transition-transform transform hover:scale-105">
+              <Link
+                to={`cardset?category=${encodeURIComponent(data.category)}`}
+                className="cursor-pointer"
+              >
+                <div className="w-64 h-40 flex flex-col justify-between p-4">
+                  <Card category={data.category} description={data.description} />
+                </div>
               </Link>
-              {data.id !== undefined && (
-                <button onClick={() => deleteFlashcardSet(data.id)} className="border border-red-500 text-red-500 py-1 px-2"><Trash /></button>
-              )}
+              <div className="flex justify-between p-4 border-t bg-gray-50">
+                <Link
+                  to={`edit?category=${encodeURIComponent(data.category)}`}
+                  className="cursor-pointer"
+                >
+                  <div className="flex items-center justify-center border border-gray-500 text-gray-500 rounded py-1 px-2 hover:bg-gray-100">
+                    <Pencil />
+                  </div>
+                </Link>
+                {data.id !== undefined && (
+                  <button
+                    onClick={() => deleteFlashcardSet(data.id)}
+                    className="flex items-center justify-center border border-red-500 text-red-500 rounded py-1 px-2 hover:bg-red-50"
+                  >
+                    <Trash />
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-        <Link to={`edit`} className="cursor-pointer">
-          <div className="border p-4">
-              <h1 className="text-3xl">Add</h1>
-          </div>
-        </Link>
+          ))}
+        </div>
       </div>
-      <button className="border border-red-500 text-red-500 py-1 px-2" onClick={resetFlashcardSets}>RESET</button>
+      <div className="flex gap-4 justify-center items-center">
+        <Link to={`edit`} className="cursor-pointer">
+          <button className="border border-green-500 text-green-500 py-2 px-4 rounded shadow-md hover:bg-green-50 transition-colors">
+            Add
+          </button>
+        </Link>
+        <button
+          className="border border-red-500 text-red-500 py-2 px-4 rounded shadow-md hover:bg-red-50 transition-colors"
+          onClick={resetFlashcardSets}
+        >
+          RESET
+        </button>
+      </div>
     </>
-  )
+  );
+  
 }
 
 export default Home

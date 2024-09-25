@@ -1,14 +1,15 @@
 import React from 'react'
 
 interface ButtonProps {
-    color: string;
-    onClick: () => void;
+    bcolor: string;
+    hovereffect: boolean;
+    onClick?: () => void;
     children: React.ReactNode;
 }
 
-const Button: React.FC<ButtonProps> = ({ color, onClick, children }) => {
+const Button: React.FC<ButtonProps> = ({ bcolor, hovereffect, onClick = () => {}, children }) => {
   return (
-    <button className={`border border-${color}-500 text-${color}-500 py-1 px-2`} onClick={onClick}>{children}</button>
+    <button className={`border border-${bcolor}-500 bg-${bcolor}-500 font-semibold text-white py-1 px-2 rounded ${hovereffect ? "hover:scale-105 transform" : ""}`} onClick={onClick}>{children}</button>
   )
 }
 

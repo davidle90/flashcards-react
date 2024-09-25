@@ -92,61 +92,72 @@ const Edit = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="md:flex gap-4">
+        <div className="flex justify-center mb-5">
+          <div>
+            <div className="mb-3">
+              <label className="block">Category: </label>
+              <input  
+                type="text"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md p-2.5"
+              />
+            </div>
+            <div>
+              <label className="block">Description: </label>
+              <input
+                type="text"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                required
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md p-2.5"
+              />
+            </div>
+            
+            <div className="flex gap-2 mt-3">
+              <button onClick={handleAddFlashcard} className="border border-yellow-500 text-yellow-500 py-1 px-2 rounded shadow-md hover:bg-yellow-50">Add flashcard</button>
+              <button type="submit" className="border border-green-500 text-green-500 py-1 px-2 rounded shadow-md hover:bg-green-50">Submit</button>
+            </div>
+          </div>
+        </div>
+
         <div>
-          <div>
-            <label>Category: </label>
-            <input
-              type="text"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Description: </label>
-            <input
-              type="text"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Flash cards</label>
+          <label className="block mb-3 text-center md:text-start">Flash cards: </label>
+          <div className="md:grid grid-cols-5 gap-4">
             {formData.flashcards.map((flashcard, index) => (
-              <div key={index} className="flashcard">
+              <div key={index} className="border p-5 rounded m-3 md:m-0">
                 <div>
-                  <label>Question: </label>
+                  <label className="block">Question: </label>
                   <input
                     type="text"
                     name="question"
                     value={flashcard.question}
                     onChange={(e) => handleChange(e, index)}
                     required
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md p-2.5"
                   />
                 </div>
-                <div>
-                  <label>Answer: </label>
+                <div className="mb-3">
+                  <label className="block">Answer: </label>
                   <input
                     type="text"
                     name="answer"
                     value={flashcard.answer}
                     onChange={(e) => handleChange(e, index)}
                     required
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md p-2.5"
                   />
                 </div>
 
-                <button onClick={(e) => handleRemoveFlashcard(e, flashcard.id)} className="border border-red-500 text-red-500 py-1 px-2">Remove card</button>
+                <button onClick={(e) => handleRemoveFlashcard(e, flashcard.id)} className="border border-red-500 text-red-500 py-1 px-2 rounded shadow-md hover:bg-red-50">Remove card</button>
               </div>
             ))}
           </div>
         </div>
-
-        <button onClick={handleAddFlashcard} className="border border-yellow-500 text-yellow-500 py-1 px-2">Add flashcard</button>
-        <button type="submit" className="border border-green-500 text-green-500 py-1 px-2">Submit</button>
       </form>
 
       { submitted ? (

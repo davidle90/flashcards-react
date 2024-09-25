@@ -111,42 +111,46 @@ const Cardset = () => {
     const currentFlashcard = cardset.flashcards.find(card => card.id === currentId);
 
     return (
-        <>
+        <div className="text-center flex flex-col gap-4">
             <div className="text-3xl font-semibold">{cardset.category}</div>
-            <p className="mb-5">{cardset.description}</p>
-            <div>{cardCount}/{cardset.flashcards.length} cards remaining</div>
+            <p>{cardset.description}</p>
+            <div className="text-sm">{cardCount}/{cardset.flashcards.length} cards remaining</div>
 
-            { cardCount <= 0 ? (
-                <div>Congratulations! You have completed this card set!</div>
-            ) : (
-                <div>
-                    <div className="border">
+            <div className="flex justify-center items-center mx-2 md:mx-0">
+                { cardCount <= 0 ? (
+                    <div className="border p-5 w-96 h-80 flex flex-col justify-center items-center rounded shadow-md">
+                        <span>Congratulations!</span>
+                        <p>You have completed this card set!</p>
+                    </div>
+                ) : (
+                    <div className="border p-5 w-96 h-80 flex flex-col justify-between rounded shadow-md">
                         <h1>#{currentFlashcard?.id} Question:</h1>
-                        <p>{currentFlashcard?.question}</p>
+                        <div className="text-center">{currentFlashcard?.question}</div>
 
                         {showAnswer ? (
-                            <>
-                                <h1>Answer:</h1>
-                                <p>{currentFlashcard?.answer}</p>
-                            </>
+                            <div className="text-center py-1 px-2">
+                                {currentFlashcard?.answer}
+                            </div>
                         ) : (
-                            <button className="border border-yellow-500 text-yellow-500 py-1 px-2" onClick={handleShowAnswer}>Show answer</button>
+                            <button className="border border-yellow-500 text-yellow-500 py-1 px-2 rounded shadow-md hover:bg-yellow-50" onClick={handleShowAnswer}>Show answer</button>
                         )}
-                    </div>
 
-                    <div className="flex justify-between items-center">
-                        {cardCount > 1 ? (
-                            <button className="border border-orange-500 text-orange-500 py-1 px-2" onClick={() => handleNext("skip")}>Skip</button>
-                        ) : (
-                            <button className="border border-gray-500 text-gray-500 py-1 px-2" disabled>Skip</button>
-                        )}
-                        <button className="border border-green-500 text-green-500 py-1 px-2" onClick={() => handleNext("learned")}>Got it!</button>
+                        <div className="flex justify-between items-center">
+                            {cardCount > 1 ? (
+                                <button className="border border-orange-500 text-orange-500 py-1 px-2 rounded shadow-md hover:bg-orange-50" onClick={() => handleNext("skip")}>Skip</button>
+                            ) : (
+                                <button className="border border-gray-500 text-gray-500 py-1 px-2 rounded shadow-md" disabled>Skip</button>
+                            )}
+                            <button className="border border-green-500 text-green-500 py-1 px-2 rounded shadow-md hover:bg-green-50" onClick={() => handleNext("learned")}>Got it!</button>
+                        </div>
                     </div>
-                </div>
-            )}            
+                )}
+            </div>
 
-            <button className="border border-purple-500 text-purple-500 py-1 px-2" onClick={handleResetFlashcards}>Reset flashcards</button>
-        </>
+            <div>
+                <button className="border border-purple-500 text-purple-500 py-1 px-2 rounded shadow-md hover:bg-purple-50" onClick={handleResetFlashcards}>Reset flashcards</button>
+            </div>
+        </div>
     )
 }
 
