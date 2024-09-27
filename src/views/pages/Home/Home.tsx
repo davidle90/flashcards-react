@@ -4,7 +4,6 @@ import { FlashcardSet } from '../../../types';
 import { Pencil, Trash } from "@phosphor-icons/react";
 import { useEffect, useState } from 'react';
 import data from '../../../data/flashcards.json';
-import Button from '../../../components/Button/Button';
 
 const Home = () => {
   const [flashcardSets, setFlashcardSets] = useState<FlashcardSet[]>([]);
